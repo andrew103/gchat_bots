@@ -16,7 +16,7 @@
 # See https://cloud.google.com/appengine/docs/managed-vms/python/runtime
 #
 
-runtime: python27
+runtime: python37
 api_version: 1
 threadsafe: true
 
