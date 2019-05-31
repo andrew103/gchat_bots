@@ -1,5 +1,5 @@
 Bots being worked on:
-* GamerNews - get latest news about certain video games
+* NewsBot - get latest news about a topic
 
 Bots to be worked on:
 * GamerStats - get a player's statistics for certain games
