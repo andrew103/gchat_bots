@@ -1,7 +1,11 @@
-Bots being worked on:
+Finished bots:
 * NewsBot - get latest news about a topic
 
-Bots to be worked on:
+Bots being worked on:
 * GamerStats - get a player's statistics for certain games
 
+Bots to be worked on:
+* 
+
 Ideas for bots:
+* 
