@@ -1,3 +1,4 @@
+# [START news_bot]
 import logging
 from flask import Flask, render_template, request, json, make_response
 from GoogleNews import GoogleNews as gnews
@@ -5,9 +6,8 @@ from GoogleNews import GoogleNews as gnews
 app = Flask(__name__)
 googlenews = gnews()
 
-commands_text = """
-Usage: @NewsBot <topic>\n
-Available commands are:\n
+commands_text = """Usage: @NewsBot <topic>
+Available commands are:
 help - Display this prompt
 """
 
@@ -44,20 +44,23 @@ def format_response(event):
 
     # Case 1: The bot was added to a room
     if event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'ROOM':
-        text = 'Thanks for adding me to "%s"!\n' + commands_text % event['space']['displayName']
+        text = 'Thanks for adding me to "%s"!\n' % event['space']['displayName'] + commands_text
 
     # Case 2: The bot was added to a DM
     elif event['type'] == 'ADDED_TO_SPACE' and event['space']['type'] == 'DM':
-        text = 'Thanks for adding me to a DM, %s!\n' + commands_text % event['user']['displayName']
+        text = 'Thanks for adding me to a DM, %s!\n' % event['user']['displayName'] + commands_text
 
     elif event['type'] == 'MESSAGE':
         usr_input = event['message']['text'].split("@NewsBot")[1].lower().strip()
+        logging.info(usr_input)
 
-        if len(usr_input) == 0 or usr_input[0] == "help":
+        if len(usr_input) == 0 or usr_input == "help":
             text = commands_text
         else:
-            topic = " ".join(usr_input)
-            googlenews.search(topic)
+            # Make the search input one word since the GoogleNews library doesn't work with multiple word inputs
+            search_input = usr_input.replace(" ", "-")
+            googlenews.clear()
+            googlenews.search(search_input)
             if len(googlenews.gettext()) > 5:
                 titles = googlenews.gettext()[:5]
                 links = googlenews.getlinks()[:5]
@@ -65,11 +68,11 @@ def format_response(event):
                 titles = googlenews.gettext()
                 links = googlenews.getlinks()
 
-            text = "News on %s:\n" + "\n".join([str(title[i])+" - "+str(link[i]) for i in range(len(titles))]) % topic
-
-        # text = 'Your message: "%s"' % event['message']['text']
+            text = "News on %s:\n" % usr_input + "\n".join([str(titles[i])+" - "+str(links[i]) for i in range(len(titles))])
 
     return { 'text': text }
+
+# [END news_bot]
 
 @app.route('/', methods=['GET'])
 def home_get():

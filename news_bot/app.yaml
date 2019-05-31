@@ -17,9 +17,7 @@
 #
 
 runtime: python37
-api_version: 1
-threadsafe: true
 
 handlers:
 - url: /.*
-  script: bot.app
+  script: auto
