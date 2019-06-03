@@ -1,3 +1,11 @@
+# =============================================================================
+# Author(s):
+# - Andrew Euredjian
+# 
+# Description:
+# A bot that gets the latest news articles about a given topic
+# 
+# =============================================================================
 # [START news_bot]
 import logging
 from flask import Flask, render_template, request, json, make_response
