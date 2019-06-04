@@ -1,5 +1,4 @@
-===============================================================================
-CONTRIBUTING / CREATING YOUR OWN BOT
+Contributing / Creating your own bot
 ===============================================================================
 
 If you'd like to create your own bot, follow the steps below to get started.
@@ -10,8 +9,7 @@ If you'd like to create your own bot, follow the steps below to get started.
 
 **Note: If you'd like to have your bot added to this repo, fork the repo and create a pull request**
 
-===============================================================================
-BOT TRACKING
+Bot tracking
 ===============================================================================
 
 Finished bots:
