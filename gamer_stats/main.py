@@ -155,7 +155,7 @@ def get_stats(game_title, player_name, platform):
             pass
         elif arg == "--rank":
             resp += "\nCurrent rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
-            resp += "\nCurrent MMR: "+data["p_currentmmr"]
+            resp += "\nCurrent MMR: "+str(data["p_currentmmr"])
         else:
             resp += "\nInvalid argument. Showing defaults"
 

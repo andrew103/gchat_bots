@@ -37,7 +37,11 @@ def test_bot():
         message = input("\nMessage to bot (must include the @BotName): ")
         data['message']['text'] = message
         bot_resp = requests.post("http://127.0.0.1:8080/", json=data)
-        print(bot_resp.json()['text'])
+        try:
+            print(bot_resp.json()['text'])
+        except:
+            print("An internal error caused the bot server to shutdown. Closing test script")
+            sys.exit(0)
 
 if __name__ == "__main__":
     start_new_thread(run_bot_server, ())
