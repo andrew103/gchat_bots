@@ -95,7 +95,7 @@ def format_response(event):
             text = "Available games to pull stats from:\n"+"\n".join(list(games.keys()))
         else:
             args = usr_input.split("/")
-            if len(args) != 2:
+            if len(args) != 3:
                 text = "Invalid input.\n"+commands_text
             else:
                 text = get_stats(args[0].strip().lower(), args[1].strip(), args[2].strip().lower())
@@ -120,14 +120,17 @@ def get_stats(game_title, player_name, platform):
         data = {}
         search_endpoint = "https://r6tab.com/api/search.php"
         player_endpoint = "https://r6tab.com/api/player.php"
-        if platform == "pc":
-            data = requests.get(search_endpoint+"?platform=uplay&search="+player_name).json()
-        elif platform == "psn":
-            data = requests.get(search_endpoint+"?platform=psn&search="+player_name).json()
-        elif platform == "xbox":
-            data = requests.get(search_endpoint+"?platform=xbl&search="+player_name).json()
-        else:
-            return "Invalid platform"
+        try:
+            if platform == "pc":
+                data = requests.get(search_endpoint+"?platform=uplay&search="+player_name).json()
+            elif platform == "psn":
+                data = requests.get(search_endpoint+"?platform=psn&search="+player_name).json()
+            elif platform == "xbox":
+                data = requests.get(search_endpoint+"?platform=xbl&search="+player_name).json()
+            else:
+                return "Invalid platform"
+        except:
+            return "API for Rainbow 6 Siege is not available currently"
 
         if "results" not in list(data.keys()):
             return "No results from search"
