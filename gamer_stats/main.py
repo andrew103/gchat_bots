@@ -11,6 +11,7 @@
 import logging
 from flask import Flask, request, json, make_response
 import requests
+import ast
 
 app = Flask(__name__)
 
@@ -140,45 +141,46 @@ def get_stats(game_title, player_name, platform):
 
         pid = data["p_id"]
         data = requests.get(player_endpoint+"?p_id="+pid).json()
+        p_data = ast.literal_eval(data["p_data"])
         resp = "Player data for "+player_name+" in Rainbow 6: Siege"
 
         if arg == "":
             resp += "\nCurrent level: "+str(data["p_level"])
             resp += "\nCurrent rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
             resp += "\nK/D ratio: "+str(float(data["kd"])/100.0)
-            wl_ratio = float(data["p_data"][8]+data["p_data"][3])/float(data["p_data"][9]+data["p_data"][4])
+            wl_ratio = round(float(p_data[8]+p_data[3])/float(p_data[9]+p_data[4]), 2)
             resp += "\nW/L ratio: "+str(wl_ratio)
-            resp += "\nHours played: "+str(float(data["p_data"][0]+data["p_data"][5])/3600.0)
+            resp += "\nHours played: "+str(round(float(p_data[0]+p_data[5])/3600.0, 2))
         elif arg == "--detailed":
             resp += "\nCurrent level: "+str(data["p_level"])
-            resp += "\nCurrent rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
-            resp += " | Best rank: "+r6_siege_rank_map[int(data["p_maxrank"])]
-            resp += "\nCasual K/D: "+str(float(data["p_data"][6])/float(data["p_data"][7]))
-            resp += " | Ranked K/D: "+str(float(data["p_data"][1])/float(data["p_data"][2]))
-            resp += "\nCasual W/L: "+str(float(data["p_data"][8])/float(data["p_data"][9]))
-            resp += " | Ranked W/L: "+str(float(data["p_data"][3])/float(data["p_data"][4]))
-            resp += "\nBomb W/L: "+str(float(data["p_data"][10])/float(data["p_data"][11]))
-            resp += " | Secure W/L: "+str(float(data["p_data"][12])/float(data["p_data"][13]))
-            resp += " | Hostage W/L: "+str(float(data["p_data"][14])/float(data["p_data"][15]))
-            resp += "\nTotal headshots: "+str(data["p_data"][17])
-            resp += " | Total melees: "+str(data["p_data"][18])
+            resp += "\nCurrent season rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
+            resp += " | Best season rank: "+r6_siege_rank_map[int(data["p_maxrank"])]
+            resp += "\nCasual K/D: "+str(round(float(p_data[6])/float(p_data[7]), 2))
+            resp += " | Ranked K/D: "+str(round(float(p_data[1])/float(p_data[2]), 2))
+            resp += "\nCasual W/L: "+str(round(float(p_data[8])/float(p_data[9]), 2))
+            resp += " | Ranked W/L: "+str(round(float(p_data[3])/float(p_data[4]), 2))
+            resp += "\nBomb W/L: "+str(round(float(p_data[10])/float(p_data[11]), 2))
+            resp += " | Secure W/L: "+str(round(float(p_data[12])/float(p_data[13]), 2))
+            resp += " | Hostage W/L: "+str(round(float(p_data[14])/float(p_data[15]), 2))
+            resp += "\nTotal headshots: "+str(p_data[17])
+            resp += " | Total melees: "+str(p_data[18])
         elif arg == "--kd":
-            resp += "\nCasual K/D ratio: "+str(float(data["p_data"][6])/float(data["p_data"][7]))
-            resp += "\nRanked K/D ratio: "+str(float(data["p_data"][1])/float(data["p_data"][2]))
+            resp += "\nCasual K/D ratio: "+str(round(float(p_data[6])/float(p_data[7]), 2))
+            resp += "\nRanked K/D ratio: "+str(round(float(p_data[1])/float(p_data[2]), 2))
         elif arg == "--wl":
-            resp += "\nCasual W/L ratio: "+str(float(data["p_data"][8])/float(data["p_data"][9]))
-            resp += "\nRanked W/L ratio: "+str(float(data["p_data"][3])/float(data["p_data"][4]))
+            resp += "\nCasual W/L ratio: "+str(round(float(p_data[8])/float(p_data[9]), 2))
+            resp += "\nRanked W/L ratio: "+str(round(float(p_data[3])/float(p_data[4]), 2))
         elif arg == "--hours":
-            resp += "\nCasual hours played: "+str(float(data["p_data"][5])/3600.0)
-            resp += "\nRanked hours played: "+str(float(data["p_data"][0])/3600.0)
+            resp += "\nCasual hours played: "+str(round(float(p_data[5])/3600.0, 2))
+            resp += "\nRanked hours played: "+str(round(float(p_data[0])/3600.0, 2))
         elif arg == "--matches":
-            resp += "\nCasual matches played: "+str(data["p_data"][8]+data["p_data"][9])
-            resp += "\nRanked matches played: "+str(data["p_data"][3]+data["p_data"][4])
+            resp += "\nCasual matches played: "+str(p_data[8]+p_data[9])
+            resp += "\nRanked matches played: "+str(p_data[3]+p_data[4])
         elif arg == "--rank":
             resp += "\nCurrent rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
             resp += "\nCurrent MMR: "+str(data["p_currentmmr"])
         elif arg == "--embarass":
-            wl_ratio = float(data["p_data"][8]+data["p_data"][3])/float(data["p_data"][9]+data["p_data"][4])
+            wl_ratio = round(float(p_data[8]+p_data[3])/float(p_data[9]+p_data[4]), 2)
             if 0 < int(data["p_currentrank"]) < 5:
                 resp += "\nHey check it out, we got a copper over here"
             if float(data["kd"])/100.0 < 0.5:
@@ -186,15 +188,15 @@ def get_stats(game_title, player_name, platform):
             if wl_ratio < 0.5:
                 resp += "\nW/L ratio: "+str(wl_ratio)+" (could use a little work)"
             
-            resp += "\nYou've owned yourself (likely with a grenade) "+str(data["p_data"][20])+" times! Congrats!"
+            resp += "\nYou've owned yourself (likely with a grenade) "+str(p_data[20])+" times! Congrats!"
         else:
             resp += "\nInvalid argument. Showing defaults"
             resp += "\nCurrent level: "+str(data["p_level"])
             resp += "\nCurrent rank: "+r6_siege_rank_map[int(data["p_currentrank"])]
             resp += "\nK/D ratio: "+str(float(data["kd"])/100.0)
-            wl_ratio = float(data["p_data"][8]+data["p_data"][3])/float(data["p_data"][9]+data["p_data"][4])
+            wl_ratio = round(float(p_data[8]+p_data[3])/float(p_data[9]+p_data[4]), 2)
             resp += "\nW/L ratio: "+str(wl_ratio)
-            resp += "\nHours played: "+str(float(data["p_data"][0]+data["p_data"][5])/3600.0)
+            resp += "\nHours played: "+str(round(float(p_data[0]+p_data[5])/3600.0, 2))
         
         return resp
     else:
